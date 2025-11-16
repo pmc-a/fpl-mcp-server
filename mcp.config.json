@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "fpl-mcp-server": {
+      "command": "node",
+      "args": ["dist/index.js"],
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  }
+}
