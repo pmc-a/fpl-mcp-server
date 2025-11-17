@@ -25,7 +25,7 @@
   ],
   "author": "pmc-a",
   "license": "MIT",
-  "description": "A Model Context Protocol (MCP) server providing comprehensive access to Fantasy Premier League data with seven powerful tools for player stats, team info, fixtures, and comparisons",
+  "description": "A Model Context Protocol (MCP) server providing comprehensive access to Fantasy Premier League data with eight powerful tools for player stats, team info, fixtures, comparisons, and manager teams",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pmc-a/fpl-mcp-server.git"

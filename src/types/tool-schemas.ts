@@ -74,3 +74,18 @@ export const SearchTeamsInputSchema = z.object({
 });
 
 export type SearchTeamsInput = z.infer<typeof SearchTeamsInputSchema>;
+
+// Manager team tool input
+export const ManagerTeamInputSchema = z.object({
+  managerId: z.number()
+    .int()
+    .min(1, "Manager ID must be at least 1")
+    .max(10000000, "Manager ID must not exceed 10,000,000"),
+  gameweek: z.number()
+    .int()
+    .min(1, "Gameweek must be at least 1")
+    .max(38, "Gameweek must not exceed 38")
+    .optional()
+});
+
+export type ManagerTeamInput = z.infer<typeof ManagerTeamInputSchema>;

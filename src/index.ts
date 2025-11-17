@@ -18,6 +18,7 @@ import { comparePlayersTool } from './tools/compare-players.js';
 import { getTeamInfoTool } from './tools/team-info.js';
 import { searchPlayersTool } from './tools/search-players.js';
 import { searchTeamsTool } from './tools/search-teams.js';
+import { getManagerTeamTool } from './tools/manager-team.js';
 
 // Types and schemas
 import {
@@ -28,6 +29,7 @@ import {
   CurrentGameweekInputSchema,
   SearchPlayersInputSchema,
   SearchTeamsInputSchema,
+  ManagerTeamInputSchema,
 } from './types/tool-schemas.js';
 
 // Error handling utilities
@@ -65,7 +67,7 @@ class FPLMCPServer {
   private logServerInfo(): void {
     const nodeEnv = process.env.NODE_ENV || 'development';
     logger.info(`FPL MCP Server v1.0.0 initializing in ${nodeEnv} mode`);
-    logger.info('Registering 7 FPL tools: gameweek, player-stats, fixtures, compare-players, team-info, search-players, search-teams');
+    logger.info('Registering 8 FPL tools: gameweek, player-stats, fixtures, compare-players, team-info, search-players, search-teams, manager-team');
   }
 
   /**
@@ -142,7 +144,17 @@ class FPLMCPServer {
       }
     );
 
-    logger.info('All 7 FPL tools registered successfully');
+    // Register get_manager_team tool
+    this.server.tool(
+      'get_manager_team',
+      'Get a manager\'s team selection for a specific gameweek, including starting XI, bench, captain, formation, and points. If gameweek is not specified, returns the current gameweek team.',
+      ManagerTeamInputSchema.shape,
+      async (args, _extra) => {
+        return await this.executeToolWithErrorHandling('get_manager_team', args, getManagerTeamTool);
+      }
+    );
+
+    logger.info('All 8 FPL tools registered successfully');
   }
 
   /**

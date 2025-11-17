@@ -11,6 +11,7 @@ A Model Context Protocol (MCP) server that provides access to Fantasy Premier Le
 - **Gameweek Fixtures**: Get all fixtures for a specific gameweek
 - **Player Comparison**: Compare statistics between multiple players
 - **Team Information**: Get team details and current squad information
+- **Manager Team**: View a manager's team selection for any gameweek, including starting XI, bench, captain, and formation
 
 ## Installation
 
@@ -121,6 +122,10 @@ In development mode, logs are colorized for better readability. All logs are wri
 
 7. **get_team_info**: Requires `teamId` (1-20)
    - Use search_teams first to find the team ID
+
+8. **get_manager_team**: Requires `managerId` (1-10000000), optional `gameweek` (1-38)
+   - Returns manager's team selection including starting XI, bench, captain, formation, and points
+   - If gameweek is not specified, returns the current gameweek team
 
 ## Error Handling
 

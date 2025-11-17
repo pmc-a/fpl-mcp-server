@@ -9,6 +9,7 @@ export type {
   Team,
   PlayerSummary,
   ManagerSummary,
+  ManagerGameweekPicks,
   Gameweek,
   EventStatus
 } from 'fpl-fetch';
@@ -53,6 +54,36 @@ export interface TeamInfo {
   shortName: string;
   code: number;
   players: PlayerStats[];
+}
+
+export interface ManagerTeamPlayer {
+  id: number;
+  name: string;
+  position: string;
+  team: string;
+  cost: number;
+  isCaptain: boolean;
+  isViceCaptain: boolean;
+  multiplier: number;
+  positionInTeam: number;
+}
+
+export interface ManagerTeam {
+  managerId: number;
+  managerName: string;
+  gameweek: number;
+  points: number;
+  totalPoints: number;
+  overallRank: number;
+  gameweekRank: number;
+  teamValue: number;
+  bank: number;
+  activeChip: string | null;
+  startingXI: ManagerTeamPlayer[];
+  bench: ManagerTeamPlayer[];
+  captain: ManagerTeamPlayer;
+  viceCaptain: ManagerTeamPlayer;
+  formation: string;
 }
 
 /**
