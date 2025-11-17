@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/pmc-a/fpl-mcp-server/compare/v1.0.0...v1.1.0) (2025-11-17)
+
+
+### Features
+
+* **tools:** fetch manager team ([4a336e5](https://github.com/pmc-a/fpl-mcp-server/commit/4a336e57f26e38c0be20a48f15bfe15794368845))
+
 ## 1.0.0 (2025-11-16)
 
 
