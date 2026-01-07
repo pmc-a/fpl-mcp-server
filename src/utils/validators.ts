@@ -23,7 +23,7 @@ export function validateInput<T>(
           error: true,
           message: "Invalid input parameters",
           code: "VALIDATION_ERROR",
-          details: error.errors.map(err => ({
+          details: error.issues.map(err => ({
             path: err.path.join('.'),
             message: err.message,
             code: err.code
