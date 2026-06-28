@@ -11,7 +11,7 @@ export type {
   ManagerSummary,
   ManagerGameweekPicks,
   Gameweek,
-  EventStatus
+  EventStatus,
 } from 'fpl-fetch';
 
 /**
@@ -93,7 +93,7 @@ export interface ErrorResponse {
   error: true;
   message: string;
   code: string;
-  details?: any;
+  details?: unknown;
 }
 
 /**

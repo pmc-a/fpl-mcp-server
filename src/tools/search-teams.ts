@@ -1,6 +1,6 @@
 /**
  * Search teams tool
- * 
+ *
  * This tool allows searching for teams by name to find their IDs,
  * eliminating the need for trial and error when looking up team information.
  */
@@ -13,7 +13,9 @@ import { ErrorHandler } from '../utils/error-handler.js';
 /**
  * Search teams tool handler
  */
-export async function searchTeamsTool(args: SearchTeamsInput): Promise<{ content: Array<{ type: 'text'; text: string }> }> {
+export async function searchTeamsTool(
+  args: SearchTeamsInput
+): Promise<{ content: Array<{ type: 'text'; text: string }> }> {
   // Validate input
   const validationResult = SearchTeamsInputSchema.safeParse(args);
   if (!validationResult.success) {
@@ -35,17 +37,17 @@ export async function searchTeamsTool(args: SearchTeamsInput): Promise<{ content
 
   const result = await safeExecute(async () => {
     const teams = await bootstrapCache.searchTeams(query);
-    
+
     if (teams.length === 0) {
       return {
         message: `No teams found matching "${query}". Try a different search term.`,
-        results: []
+        results: [],
       };
     }
-    
+
     return {
       message: `Found ${teams.length} team(s) matching "${query}"`,
-      results: teams
+      results: teams,
     };
   }, 'searchTeamsTool');
 
@@ -67,7 +69,7 @@ export async function searchTeamsTool(args: SearchTeamsInput): Promise<{ content
         type: 'text',
         text: JSON.stringify({
           success: true,
-          data: result
+          data: result,
         }),
       },
     ],

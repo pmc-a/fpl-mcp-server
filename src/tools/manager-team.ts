@@ -1,6 +1,6 @@
 /**
  * Manager team tool
- * 
+ *
  * This tool retrieves a manager's team selection for a specific gameweek,
  * including starting XI, bench, captain choices, formation, and points.
  */
@@ -15,7 +15,9 @@ import { logger } from '../utils/logger.js';
 /**
  * Manager team tool handler
  */
-export async function getManagerTeamTool(args: ManagerTeamInput): Promise<{ content: Array<{ type: 'text'; text: string }> }> {
+export async function getManagerTeamTool(
+  args: ManagerTeamInput
+): Promise<{ content: Array<{ type: 'text'; text: string }> }> {
   // Validate input
   const validationResult = ManagerTeamInputSchema.safeParse(args);
   if (!validationResult.success) {
@@ -37,24 +39,22 @@ export async function getManagerTeamTool(args: ManagerTeamInput): Promise<{ cont
 
   const result = await safeExecute(async () => {
     const fpl = new FPL();
-    
+
     // Get manager summary to verify manager exists and get current gameweek if not specified
     const managerSummary = await fpl.getManager(managerId);
-    
+
     if (!managerSummary) {
-      return ErrorHandler.createErrorResponse(
-        ErrorCode.PLAYER_NOT_FOUND,
-        `Manager with ID ${managerId} not found.`,
-        { managerId }
-      );
+      return ErrorHandler.createErrorResponse(ErrorCode.PLAYER_NOT_FOUND, `Manager with ID ${managerId} not found.`, {
+        managerId,
+      });
     }
 
     // Use current gameweek if not specified
     const targetGameweek = gameweek || managerSummary.current_event;
-    
+
     // Get manager's picks for the specified gameweek
     const picks = await fpl.getManagerGameweekPicks(managerId, targetGameweek);
-    
+
     if (!picks || !picks.picks || picks.picks.length === 0) {
       return ErrorHandler.createErrorResponse(
         ErrorCode.NO_DATA_AVAILABLE,
@@ -65,13 +65,13 @@ export async function getManagerTeamTool(args: ManagerTeamInput): Promise<{ cont
 
     // Get bootstrap data to enrich player information
     const bootstrapData = await bootstrapCache.getBootstrapData();
-    
+
     // Build player details
     const playerDetails: ManagerTeamPlayer[] = picks.picks.map((pick) => {
       const player = bootstrapData.elements.find((p) => p.id === pick.element);
       const team = bootstrapData.teams.find((t) => t.id === player?.team);
       const position = bootstrapData.element_types.find((et) => et.id === pick.element_type);
-      
+
       return {
         id: pick.element,
         name: player?.web_name || 'Unknown',
@@ -88,11 +88,11 @@ export async function getManagerTeamTool(args: ManagerTeamInput): Promise<{ cont
     // Separate starting XI and bench (positions 1-11 are starting, 12-15 are bench)
     const startingXI = playerDetails.filter((p) => p.positionInTeam <= 11);
     const bench = playerDetails.filter((p) => p.positionInTeam > 11);
-    
+
     // Find captain and vice captain
     const captain = playerDetails.find((p) => p.isCaptain);
     const viceCaptain = playerDetails.find((p) => p.isViceCaptain);
-    
+
     if (!captain || !viceCaptain) {
       logger.warn('Captain or vice captain not found in picks', { managerId, gameweek: targetGameweek });
     }
@@ -139,7 +139,7 @@ export async function getManagerTeamTool(args: ManagerTeamInput): Promise<{ cont
         type: 'text',
         text: JSON.stringify({
           success: true,
-          data: result
+          data: result,
         }),
       },
     ],

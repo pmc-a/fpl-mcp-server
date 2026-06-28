@@ -9,7 +9,11 @@
     "dev": "ts-node src/index.ts",
     "clean": "rm -rf dist",
     "prebuild": "npm run clean",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "lint": "oxlint src/",
+    "lint:fix": "oxlint src/ --fix",
+    "fmt": "oxfmt src/",
+    "fmt:check": "oxfmt src/ --check"
   },
   "keywords": [
     "fpl",
@@ -44,6 +48,9 @@
     "@commitlint/cli": "^20.5.0",
     "@commitlint/config-conventional": "^20.5.0",
     "@types/node": "^25.5.0",
+    "oxfmt": "0.56.0",
+    "oxlint": "1.71.0",
+    "oxlint-tsgolint": "0.23.0",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.2"
   },

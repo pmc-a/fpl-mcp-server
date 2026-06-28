@@ -1,6 +1,6 @@
 /**
  * Search players tool
- * 
+ *
  * This tool allows searching for players by name to find their IDs,
  * eliminating the need for trial and error when looking up player information.
  */
@@ -13,7 +13,9 @@ import { ErrorHandler } from '../utils/error-handler.js';
 /**
  * Search players tool handler
  */
-export async function searchPlayersTool(args: SearchPlayersInput): Promise<{ content: Array<{ type: 'text'; text: string }> }> {
+export async function searchPlayersTool(
+  args: SearchPlayersInput
+): Promise<{ content: Array<{ type: 'text'; text: string }> }> {
   // Validate input
   const validationResult = SearchPlayersInputSchema.safeParse(args);
   if (!validationResult.success) {
@@ -35,17 +37,17 @@ export async function searchPlayersTool(args: SearchPlayersInput): Promise<{ con
 
   const result = await safeExecute(async () => {
     const players = await bootstrapCache.searchPlayers(query);
-    
+
     if (players.length === 0) {
       return {
         message: `No players found matching "${query}". Try a different search term.`,
-        results: []
+        results: [],
       };
     }
-    
+
     return {
       message: `Found ${players.length} player(s) matching "${query}"`,
-      results: players
+      results: players,
     };
   }, 'searchPlayersTool');
 
@@ -67,7 +69,7 @@ export async function searchPlayersTool(args: SearchPlayersInput): Promise<{ con
         type: 'text',
         text: JSON.stringify({
           success: true,
-          data: result
+          data: result,
         }),
       },
     ],
