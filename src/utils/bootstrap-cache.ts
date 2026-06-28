@@ -1,6 +1,6 @@
 /**
  * Bootstrap data cache and lookup utilities
- * 
+ *
  * This module provides cached access to FPL bootstrap data and helper functions
  * to search for players and teams by name, avoiding the need for LLMs to guess IDs.
  */
@@ -8,11 +8,41 @@
 import FPL from 'fpl-fetch';
 import { ErrorCode, FPLError } from './error-handler.js';
 
+interface RawPlayer {
+  id: number;
+  web_name: string;
+  first_name: string;
+  second_name: string;
+  team: number;
+  element_type: number;
+  now_cost: number;
+}
+
+interface RawTeam {
+  id: number;
+  name: string;
+  short_name: string;
+  code: number;
+}
+
+interface RawElementType {
+  id: number;
+  singular_name: string;
+}
+
+interface RawEvent {
+  id: number;
+  is_current: boolean;
+  is_next: boolean;
+  deadline_time: string;
+  finished: boolean;
+}
+
 interface BootstrapData {
-  elements: any[];
-  teams: any[];
-  element_types: any[];
-  events: any[];
+  elements: RawPlayer[];
+  teams: RawTeam[];
+  element_types: RawElementType[];
+  events: RawEvent[];
 }
 
 interface PlayerSearchResult {
@@ -42,25 +72,21 @@ class BootstrapCache {
    */
   async getBootstrapData(): Promise<BootstrapData> {
     const now = Date.now();
-    
-    if (this.cache && (now - this.lastFetch) < this.CACHE_TTL) {
+
+    if (this.cache && now - this.lastFetch < this.CACHE_TTL) {
       return this.cache;
     }
 
     const fpl = new FPL();
     const data = await fpl.getBootstrapData();
-    
+
     if (!data || !data.elements || !data.teams || !data.element_types) {
-      throw new FPLError(
-        ErrorCode.NO_DATA_AVAILABLE,
-        'Failed to fetch bootstrap data from FPL API',
-        {}
-      );
+      throw new FPLError(ErrorCode.NO_DATA_AVAILABLE, 'Failed to fetch bootstrap data from FPL API', {});
     }
 
     this.cache = data;
     this.lastFetch = now;
-    
+
     return data;
   }
 
@@ -70,14 +96,14 @@ class BootstrapCache {
   async searchPlayers(query: string): Promise<PlayerSearchResult[]> {
     const data = await this.getBootstrapData();
     const normalizedQuery = query.toLowerCase().trim();
-    
+
     const matches = data.elements
       .filter((player) => {
         const webName = player.web_name.toLowerCase();
         const firstName = player.first_name.toLowerCase();
         const secondName = player.second_name.toLowerCase();
         const fullName = `${firstName} ${secondName}`;
-        
+
         return (
           webName.includes(normalizedQuery) ||
           fullName.includes(normalizedQuery) ||
@@ -88,7 +114,7 @@ class BootstrapCache {
       .map((player) => {
         const team = data.teams.find((t) => t.id === player.team);
         const position = data.element_types.find((et) => et.id === player.element_type);
-        
+
         return {
           id: player.id,
           name: player.web_name,
@@ -100,7 +126,7 @@ class BootstrapCache {
         };
       })
       .slice(0, 10); // Limit to top 10 results
-    
+
     return matches;
   }
 
@@ -110,14 +136,14 @@ class BootstrapCache {
   async getPlayerById(playerId: number): Promise<PlayerSearchResult | null> {
     const data = await this.getBootstrapData();
     const player = data.elements.find((p) => p.id === playerId);
-    
+
     if (!player) {
       return null;
     }
-    
+
     const team = data.teams.find((t) => t.id === player.team);
     const position = data.element_types.find((et) => et.id === player.element_type);
-    
+
     return {
       id: player.id,
       name: player.web_name,
@@ -135,12 +161,12 @@ class BootstrapCache {
   async searchTeams(query: string): Promise<TeamSearchResult[]> {
     const data = await this.getBootstrapData();
     const normalizedQuery = query.toLowerCase().trim();
-    
+
     const matches = data.teams
       .filter((team) => {
         const name = team.name.toLowerCase();
         const shortName = team.short_name.toLowerCase();
-        
+
         return name.includes(normalizedQuery) || shortName.includes(normalizedQuery);
       })
       .map((team) => ({
@@ -149,7 +175,7 @@ class BootstrapCache {
         shortName: team.short_name,
         code: team.code,
       }));
-    
+
     return matches;
   }
 
@@ -159,11 +185,11 @@ class BootstrapCache {
   async getTeamById(teamId: number): Promise<TeamSearchResult | null> {
     const data = await this.getBootstrapData();
     const team = data.teams.find((t) => t.id === teamId);
-    
+
     if (!team) {
       return null;
     }
-    
+
     return {
       id: team.id,
       name: team.name,

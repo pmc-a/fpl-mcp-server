@@ -21,25 +21,25 @@ export function validateInput<T>(
         success: false,
         error: {
           error: true,
-          message: "Invalid input parameters",
-          code: "VALIDATION_ERROR",
-          details: error.issues.map(err => ({
+          message: 'Invalid input parameters',
+          code: 'VALIDATION_ERROR',
+          details: error.issues.map((err) => ({
             path: err.path.join('.'),
             message: err.message,
-            code: err.code
-          }))
-        }
+            code: err.code,
+          })),
+        },
       };
     }
-    
+
     return {
       success: false,
       error: {
         error: true,
-        message: "Unexpected validation error",
-        code: "VALIDATION_ERROR",
-        details: error
-      }
+        message: 'Unexpected validation error',
+        code: 'VALIDATION_ERROR',
+        details: error,
+      },
     };
   }
 }
@@ -76,14 +76,14 @@ export const ValidationPatterns = {
     if (!Array.isArray(ids) || ids.length < 2 || ids.length > 10) {
       return false;
     }
-    
+
     // Check for duplicates
     const uniqueIds = new Set(ids);
     if (uniqueIds.size !== ids.length) {
       return false;
     }
-    
+
     // Check each ID is valid
-    return ids.every(id => ValidationPatterns.isValidPlayerId(id));
-  }
+    return ids.every((id) => ValidationPatterns.isValidPlayerId(id));
+  },
 };

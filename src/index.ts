@@ -2,7 +2,7 @@
 
 /**
  * FPL MCP Server
- * 
+ *
  * This is the main entry point for the Fantasy Premier League MCP server.
  * It initializes the MCP server with SDK configuration and registers all available tools.
  */
@@ -67,7 +67,9 @@ class FPLMCPServer {
   private logServerInfo(): void {
     const nodeEnv = process.env.NODE_ENV || 'development';
     logger.info(`FPL MCP Server v1.0.0 initializing in ${nodeEnv} mode`);
-    logger.info('Registering 8 FPL tools: gameweek, player-stats, fixtures, compare-players, team-info, search-players, search-teams, manager-team');
+    logger.info(
+      'Registering 8 FPL tools: gameweek, player-stats, fixtures, compare-players, team-info, search-players, search-teams, manager-team'
+    );
   }
 
   /**
@@ -147,7 +149,7 @@ class FPLMCPServer {
     // Register get_manager_team tool
     this.server.tool(
       'get_manager_team',
-      'Get a manager\'s team selection for a specific gameweek, including starting XI, bench, captain, formation, and points. If gameweek is not specified, returns the current gameweek team.',
+      "Get a manager's team selection for a specific gameweek, including starting XI, bench, captain, formation, and points. If gameweek is not specified, returns the current gameweek team.",
       ManagerTeamInputSchema.shape,
       async (args, _extra) => {
         return await this.executeToolWithErrorHandling('get_manager_team', args, getManagerTeamTool);
@@ -162,27 +164,26 @@ class FPLMCPServer {
    */
   private async executeToolWithErrorHandling<T>(
     toolName: string,
-    args: any,
+    args: unknown,
     toolHandler: (args: T) => Promise<{ content: Array<{ type: 'text'; text: string }> }>
   ): Promise<{ content: Array<{ type: 'text'; text: string }> }> {
     const startTime = Date.now();
-    
+
     try {
       logger.debug(`Executing tool: ${toolName}`, { args });
-      
-      const result = await toolHandler(args);
+
+      const result = await toolHandler(args as T);
       const duration = Date.now() - startTime;
-      
+
       logger.info(`Tool ${toolName} completed successfully`, { duration });
       return result;
-      
     } catch (error) {
       const duration = Date.now() - startTime;
       logger.error(`Tool ${toolName} failed`, { duration, error });
-      
+
       // Create standardized error response
       const errorResponse = ErrorHandler.handleUnexpectedError(error);
-      
+
       return {
         content: [
           {
@@ -254,10 +255,10 @@ class FPLMCPServer {
       logger.warn('Shutdown already in progress...');
       return;
     }
-    
+
     this.isShuttingDown = true;
     logger.info('FPL MCP Server shutting down...');
-    
+
     // Give a moment for any pending operations to complete
     setTimeout(() => {
       logger.info('Shutdown complete');
