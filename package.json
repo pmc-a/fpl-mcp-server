@@ -52,7 +52,7 @@
     "oxlint": "1.72.0",
     "oxlint-tsgolint": "0.24.0",
     "ts-node": "^10.9.2",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   },
   "engines": {
     "node": ">=18.0.0"
