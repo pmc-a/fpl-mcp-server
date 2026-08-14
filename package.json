@@ -39,7 +39,7 @@
   },
   "homepage": "https://github.com/pmc-a/fpl-mcp-server#readme",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@modelcontextprotocol/sdk": "^1.30.0",
     "fpl-fetch": "^2.9.0",
     "winston": "^3.19.0",
     "zod": "^4.4.3"
